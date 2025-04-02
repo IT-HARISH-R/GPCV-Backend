@@ -1,12 +1,15 @@
 import mongoose from "mongoose"
 
- const complaintSchema = new mongoose.Schema(
+const complaintSchema = new mongoose.Schema(
     {
+        name: {
+            type: String,
+        },
         department: {
             type: String,
             required: true,
         },
-        incidentDetails: {
+        incident: {
             type: String,
             required: true,
         },

@@ -3,13 +3,16 @@ import Complaint from "../models/Complaint.js"
 // Submit a complaint (POST)
 export const fileComplaint = async (req, res) => {
     try {
-        const { department, incidentDetails } = req.body;
+        console.log(req.body)
+        const { name, department, incident } = req.body;
 
-        if (!department || !incidentDetails) {
+
+
+        if (!department || !incident) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        const newComplaint = new Complaint({ department, incidentDetails });
+        const newComplaint = new Complaint({ name, department, incident });
         await newComplaint.save();
 
         res.status(201).json({ message: "Complaint filed successfully", newComplaint });
@@ -27,7 +30,7 @@ export const getComplaints = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error", error });
     }
 };
-
+ 
 
 // [
 //     {
