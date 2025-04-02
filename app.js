@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import complaintRoutes from './routes/complaintRoutes.js';
 
 // const errorPage = require("./utlis/errorPage");
   
@@ -16,7 +17,8 @@ app.use(cors(
 ))
 
 // app.use(cookieParser())
-// app.use("/api/v1/auth", authRouter);
+
+app.use("/api/v1/", complaintRoutes);
  
 
 // app.use(errorPage); 

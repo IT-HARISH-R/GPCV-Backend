@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import { MONGODB_URL, PORT } from './utlis/config.js'
 import app from './app.js'
 
-const port = PORT || 4000
+
 mongoose.connect(MONGODB_URL)
 .then(() => {
     console.log("\x1b[32m%s\x1b[0m", "✅ Database connected successfully");
