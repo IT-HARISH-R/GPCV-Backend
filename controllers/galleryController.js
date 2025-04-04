@@ -31,3 +31,13 @@ export const uploadMultiple = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getAll = async (req, res) => {
+  try {
+    const result = await Gallery.find(); 
+    res.status(200).json(result); 
+  } catch (error) {
+    console.error("Error fetching images:", error);
+    res.status(500).json({ message: "Failed to fetch gallery images." });
+  }
+};
