@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import complaintRoutes from './routes/complaintRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import galleryRoutes from './routes/galleryRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 // const errorPage = require("./utlis/errorPage");
 
@@ -20,6 +21,7 @@ app.use(cors(
 
 // app.use(cookieParser())
 
+app.use("/api/v1/", authRoutes);
 app.use("/api/v1/", complaintRoutes);
 app.use("/api/v1/", contactRoutes);
 app.use("/api/v1/gallery", galleryRoutes);
