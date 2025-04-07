@@ -2,6 +2,8 @@ import User from '../models/User.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { SECRET_KEY } from '../utlis/config.js'
+import sendWelcomeEmail from '../middlewares/sendMail.js'
+
 
 const SECRET = SECRET_KEY
 
@@ -24,7 +26,6 @@ export const register = async (req, res) => {
 // Login
 export const login = async (req, res) => {
     const { email, password } = req.body
-    console.log(req.body)
 
     try {
         const user = await User.findOne({ email })
@@ -39,7 +40,7 @@ export const login = async (req, res) => {
 
         const token = jwt.sign({ id: user._id, role: user.role }, SECRET, { expiresIn: '7d' })
 
-        res.json({ token, name: user.name, role: user.role })
+        res.json({ token, name: user.name, role: user.role, status: true })
     } catch (err) {
         res.status(500).json(err)
     }
@@ -85,3 +86,56 @@ export const resetPassword = async (req, res) => {
         res.status(400).json({ message: 'Invalid token' })
     }
 }
+
+export const me = async (request, response) => {
+    try {
+        console.log("..................")
+        // console.log(request)
+        console.log(request.userId)
+        const userid = request.userId
+        const user = await User.findById(userid);
+        if (!user) {
+            return response.status(404).json({ message: "user not found" });
+        }
+        console.log(user)
+
+        response.json({ user })
+    }
+    catch (error) {
+        response.status(500).json({ message: error.message });
+    }
+}
+
+
+// createEmployee
+export const createEmployee = async (req, res) => {
+    const { name, email } = req.body;
+    try {
+        console.log(req.body)
+
+        const existingUser = await User.findOne({ email })
+        if (existingUser) return res.status(400).json({ message: 'Email already exists' })
+
+        const role = 'employee';
+
+        const password = name;
+
+
+        const hashed = await bcrypt.hash(password, 10)
+
+        const user = await User.create({ name, email, password: hashed, role })
+
+        await sendWelcomeEmail({
+            name: name,
+            email: "harishmass27.8@gmail.com",
+            password: name,
+            role: "Lecturer",
+        });
+
+        res.status(201).json({ message: 'createEmployee successfully' })
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    }
+}
+
+
