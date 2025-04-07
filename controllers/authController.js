@@ -89,15 +89,15 @@ export const resetPassword = async (req, res) => {
 
 export const me = async (request, response) => {
     try {
-        console.log("..................")
+        console.log("..................me ")
         // console.log(request)
-        console.log(request.userId)
+        // console.log(request.userId)
         const userid = request.userId
         const user = await User.findById(userid);
         if (!user) {
             return response.status(404).json({ message: "user not found" });
         }
-        console.log(user)
+        // console.log(user)
 
         response.json({ user })
     }
@@ -127,7 +127,7 @@ export const createEmployee = async (req, res) => {
 
         await sendWelcomeEmail({
             name: name,
-            email: "harishmass27.8@gmail.com",
+            email: email,
             password: name,
             role: "Lecturer",
         });

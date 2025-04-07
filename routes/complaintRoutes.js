@@ -1,10 +1,10 @@
 import express from "express"
 import { fileComplaint, getComplaints } from "../controllers/complaintController.js";
 const complaintRoutes = express.Router();
-// const { fileComplaint, getComplaints } = require("../controllers/complaintController");
+import { auth } from '../middlewares/auth.js'
 
 // Route: File a complaint
-complaintRoutes.post("/complaints", fileComplaint);
+complaintRoutes.post("/complaints", auth.checkAuth, fileComplaint);
 
 // Route: Get all complaints (Admin)
 complaintRoutes.get("/complaints", getComplaints);
