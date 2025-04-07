@@ -2,6 +2,7 @@ import { sendComplaintMail } from "../middlewares/sendComplaintMail.js";
 import Complaint from "../models/Complaint.js"
 import User from "../models/User.js";
 
+
 // Submit a complaint (POST)
 export const fileComplaint = async (req, res) => {
     try {
@@ -17,7 +18,7 @@ export const fileComplaint = async (req, res) => {
 
 
 
-        await sendComplaintMail(name, department, incident,user.email);
+        await sendComplaintMail(name, department, incident, user.email);
 
         await newComplaint.save();
 
@@ -37,18 +38,14 @@ export const getComplaints = async (req, res) => {
     }
 };
 
+export const delComplaintsBYid = async (req, res) => {
+    console.log(req)
+    const { id } = req.params
+    console.log(req.params)
 
-// [
-//     {
-//       "_id": "65f7e92d3b3a8d001ce842b1",
-//       "department": "Computer Science",
-//       "incidentDetails": "Bullying incident in the dormitory.",
-//       "createdAt": "2025-04-02T12:00:00.000Z"
-//     },
-//     {
-//       "_id": "65f7e9f4b3a8d001ce842b2",
-//       "department": "Mechanical Engineering",
-//       "incidentDetails": "Senior students harassing juniors.",
-//       "createdAt": "2025-04-02T12:05:00.000Z"
-//     }
-//   ]
+    await Complaint.findByIdAndDelete(id)
+
+    res.json({ status: true })
+
+}
+

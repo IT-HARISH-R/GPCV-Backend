@@ -1,5 +1,5 @@
 import express from "express"
-import { fileComplaint, getComplaints } from "../controllers/complaintController.js";
+import { delComplaintsBYid, fileComplaint, getComplaints } from "../controllers/complaintController.js";
 const complaintRoutes = express.Router();
 import { auth } from '../middlewares/auth.js'
 
@@ -7,6 +7,8 @@ import { auth } from '../middlewares/auth.js'
 complaintRoutes.post("/complaints", auth.checkAuth, fileComplaint);
 
 // Route: Get all complaints (Admin)
-complaintRoutes.get("/complaints", getComplaints);
+complaintRoutes.get("/complaints", auth.checkAuth, auth.allowRoles(['admin']), getComplaints);
+
+complaintRoutes.delete("/delete/:id", auth.checkAuth, auth.allowRoles(['admin']), delComplaintsBYid);
 
 export default complaintRoutes;
