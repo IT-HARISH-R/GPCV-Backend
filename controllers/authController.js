@@ -3,20 +3,21 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { SECRET_KEY } from '../utlis/config.js'
 import sendWelcomeEmail from '../middlewares/sendMail.js'
+import studentMail from '../middlewares/studentMail.js'
 
 
 const SECRET = SECRET_KEY
 
 // Register
 export const register = async (req, res) => {
-    const { name, email, password, role } = req.body;
+    const { name, email, role } = req.body;
     try {
         const existingUser = await User.findOne({ email })
         if (existingUser) return res.status(400).json({ message: 'Email already exists' })
-
+        const password = name;
         const hashed = await bcrypt.hash(password, 10)
         const user = await User.create({ name, email, password: hashed, role })
-
+        await studentMail({name, email, password})
         res.status(201).json({ message: 'Registered successfully' })
     } catch (err) {
         res.status(500).json({ message: err.message })
