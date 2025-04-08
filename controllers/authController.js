@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import { SECRET_KEY } from '../utlis/config.js'
 import sendWelcomeEmail from '../middlewares/sendMail.js'
 import studentMail from '../middlewares/studentMail.js'
+import sendResetEmail from '../middlewares/sendResetEmail.js'
 
 
 const SECRET = SECRET_KEY
@@ -17,14 +18,14 @@ export const register = async (req, res) => {
         const password = name;
         const hashed = await bcrypt.hash(password, 10)
         const user = await User.create({ name, email, password: hashed, role })
-        await studentMail({name, email, password})
+        await studentMail({ name, email, password })
         res.status(201).json({ message: 'Registered successfully' })
     } catch (err) {
         res.status(500).json({ message: err.message })
     }
 }
 
-// Login
+// Login 
 export const login = async (req, res) => {
     const { email, password } = req.body
 
@@ -49,42 +50,44 @@ export const login = async (req, res) => {
 
 // Send reset link
 export const sendResetLink = async (req, res) => {
-    const { email } = req.body
+    const { email } = req.body;
+    console.log(email)
     try {
-        const user = await User.findOne({ email })
-        if (!user) return res.status(404).json({ message: 'Email not found' })
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
-        const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: '15m' })
-        user.resetToken = token
-        user.resetTokenExpire = Date.now() + 15 * 60 * 1000
-        await user.save()
+        const token = jwt.sign({ id: user._id }, SECRET, {
+            expiresIn: '15m',
+        });
 
-        // Here you'd normally send the token via email
-        // For testing, return it in response
-        res.json({ message: 'Reset link sent', token })
+        await sendResetEmail(email, token);
+
+        return res.status(200).json({ status: true, message: 'Reset email sent' });
     } catch (err) {
-        res.status(500).json({ message: err.message })
+        console.error(err);
+        res.status(500).json({ status: false, message: 'Server error' });
     }
 }
 
 // Reset password
 export const resetPassword = async (req, res) => {
-    const { token, newPassword } = req.body
+    const { password, token } = req.body;
+
     try {
-        const payload = jwt.verify(token, SECRET)
-        const user = await User.findById(payload.id)
-        if (!user || user.resetToken !== token || user.resetTokenExpire < Date.now()) {
-            return res.status(400).json({ message: 'Token invalid or expired' })
-        }
+        const decoded = jwt.verify(token, SECRET);
+        const user = await User.findById(decoded.id);
 
-        user.password = await bcrypt.hash(newPassword, 10)
-        user.resetToken = undefined
-        user.resetTokenExpire = undefined
-        await user.save()
+        if (!user) return res.status(404).json({ message: 'Invalid or expired token' });
 
-        res.json({ message: 'Password reset successful' })
-    } catch (err) {
-        res.status(400).json({ message: 'Invalid token' })
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+
+        await user.save();
+
+        res.status(200).json({ status: true, message: 'Password updated successfully' });
+
+    } catch (error) {
+        res.status(400).json({ status: false, message: 'Invalid or expired token' });
     }
 }
 
@@ -94,7 +97,7 @@ export const me = async (request, response) => {
         // console.log(request)
         // console.log(request.userId)
         const userid = request.userId
-        const user = await User.findById(userid);
+        const user = await User.findById(userid).select('-__v -_id');
         if (!user) {
             return response.status(404).json({ message: "user not found" });
         }

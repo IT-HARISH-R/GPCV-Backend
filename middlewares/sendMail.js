@@ -97,7 +97,7 @@ const sendWelcomeEmail = async ({ name, email, password, role }) => {
                   <p>Role: <span>${role}</span></p>
                 </div>
                 <p>Click the button below to access your dashboard and get started. Don’t forget to change your password after logging in.</p>
-                <a href="http://localhost:5173/login" class="button">Login to Dashboard</a>
+                <a href="https://gptv.netlify.app/login" class="button">Login to Dashboard</a>
                 <p style="margin-top: 24px;">If you have any questions or need support, feel free to contact us.</p>
                 <p>Best Regards,<br />Admin Team</p>
               </div>
