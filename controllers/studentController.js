@@ -1,6 +1,9 @@
 import Student from '../models/studentmodel.js';
 import multer from 'multer';
 import { storage } from '../config/cloudinary.js';
+import studentMail from '../middlewares/studentMail.js';
+import User from '../models/User.js';
+import bcrypt from 'bcryptjs'
 
 const upload = multer({ storage });
 export const uploadStudentProfileImage = upload.single('profileImage');
@@ -68,6 +71,14 @@ export const studentController = {
             });
             await newStudent.save();
 
+            const existingUser = await User.findOne({ email })
+            if (existingUser) return res.status(400).json({ message: 'Email already exists' })
+            const password = name;
+            const hashed = await bcrypt.hash(password, 10)
+            const user = await User.create({ name, email, password: hashed })
+            await studentMail({ name, email, password })
+
+
             res.status(201).json({ message: 'Student profile created successfully', student: newStudent });
         } catch (error) {
             console.error('Error creating student:', error);
@@ -114,11 +125,18 @@ export const studentController = {
                 aadhaarNumber,
             };
 
+            const user = Student.findOne({ email: email });
+
+            if (user) {
+                return res.status(409).json({ message: 'Email already in use' });
+
+            }
+
             // If profile image uploaded, update profileUrl
             if (req.file) {
                 console.log(req.file.path)
 
-                updateData.profileUrl = req.file.path; // new uploaded Cloudinary URL
+                updateData.profileUrl = req.file.path;
             }
 
             const student = await Student.findOneAndUpdate(
