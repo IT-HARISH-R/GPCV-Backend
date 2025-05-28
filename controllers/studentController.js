@@ -1,4 +1,4 @@
-import Student from '../models/student.model.js';
+import Student from '../models/studentmodel.js';
 import multer from 'multer';
 import { storage } from '../config/cloudinary.js';
 
@@ -66,7 +66,6 @@ export const studentController = {
                 profileUrl,
                 aadhaarNumber,
             });
-
             await newStudent.save();
 
             res.status(201).json({ message: 'Student profile created successfully', student: newStudent });
@@ -117,6 +116,8 @@ export const studentController = {
 
             // If profile image uploaded, update profileUrl
             if (req.file) {
+                console.log(req.file.path)
+
                 updateData.profileUrl = req.file.path; // new uploaded Cloudinary URL
             }
 

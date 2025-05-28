@@ -4,13 +4,8 @@ import { auth } from '../middlewares/auth.js';
 
 const studentRoutes = express.Router();
 
-// ✅ Create Student Profile
-studentRoutes.post('/create', auth.allowRoles(['employee']), uploadStudentProfileImage, studentController.create);
-
-// 🔍 Get Student Profile by registerNumber (from body)
-studentRoutes.post('/get', auth.allowRoles(['employee']), uploadStudentProfileImage, studentController.get);
-
-// 🛠️ Update Student Profile
-studentRoutes.post('/update', auth.allowRoles(['employee']), studentController.update);
+studentRoutes.post('/create', auth.checkAuth, auth.allowRoles(['employee']), uploadStudentProfileImage, studentController.create);
+studentRoutes.post('/get', auth.checkAuth, auth.allowRoles(['employee']), studentController.get);
+studentRoutes.post('/update', auth.checkAuth, auth.allowRoles(['employee']), uploadStudentProfileImage, studentController.update);
 
 export default studentRoutes;

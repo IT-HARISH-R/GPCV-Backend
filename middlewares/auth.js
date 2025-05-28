@@ -59,7 +59,7 @@ export const auth = {
           return res.status(401).json({ message: "User not found" });
         }
 
-        console.log(`🛡 Role Check: Required: [${roles.join(", ")}], User: ${user.role}`);
+        // console.log(`🛡 Role Check: Required: [${roles.join(", ")}], User: ${user.role}`);
 
         if (!roles.includes(user.role)) {
           return res.status(403).json({ message: "Forbidden: Insufficient role" });
