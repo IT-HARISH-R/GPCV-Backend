@@ -17,8 +17,8 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(express.json());
 app.use(cors(
     {
-        // origin: ['http://localhost:5173'],
-        origin: 'https://gptv.netlify.app',
+        origin: ['http://localhost:5173'],
+        // origin: 'https://gptv.netlify.app',
         credentials: true,
         // methods: ['GET', 'POST', 'PATCH', 'DELETE', "PUT"],
     }
