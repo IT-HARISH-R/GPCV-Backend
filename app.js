@@ -7,9 +7,12 @@ import galleryRoutes from './routes/galleryRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import studentRoutes from './routes/studentRoutes.js';
 
-// const errorPage = require("./utlis/errorPage");
 
 const app = express();
+
+// Increase limits (e.g., to 10MB)
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 app.use(express.json());
 app.use(cors(
@@ -35,7 +38,7 @@ app.use('*', (req, res) => {
     console.log('Path:', req.path);     // The path requested
     console.log('Original URL:', req.originalUrl); // Full URL path
 
-    res.json({ message: '404 Check route' }); 
+    res.json({ message: '404 Check route' });
 });
 
 

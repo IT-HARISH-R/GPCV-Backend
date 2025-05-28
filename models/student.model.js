@@ -6,10 +6,11 @@ const studentSchema = new mongoose.Schema({
   department: String,
   year: String,
   dob: String,
-  email: String,
+  email: { type: String, required: true, unique: true },
   phone: String,
   address: String,
   profileUrl: String,
+  aadhaarNumber: { type: String, unique: true }
 });
 
 const Student = mongoose.model('Student', studentSchema);

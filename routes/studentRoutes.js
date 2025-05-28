@@ -1,16 +1,16 @@
 import express from 'express';
-import Student from '../models/student.model.js';
-import { studentController } from '../controllers/studentController.js';
+import { studentController, uploadStudentProfileImage } from '../controllers/studentController.js';
+import { auth } from '../middlewares/auth.js';
 
 const studentRoutes = express.Router();
 
 // ✅ Create Student Profile
-studentRoutes.post('/create', studentController.create);
+studentRoutes.post('/create', auth.allowRoles(['employee']), uploadStudentProfileImage, studentController.create);
 
 // 🔍 Get Student Profile by registerNumber (from body)
-studentRoutes.post('/get', studentController.get);
+studentRoutes.post('/get', auth.allowRoles(['employee']), uploadStudentProfileImage, studentController.get);
 
 // 🛠️ Update Student Profile
-studentRoutes.put('/update', studentController.update);
+studentRoutes.post('/update', auth.allowRoles(['employee']), studentController.update);
 
 export default studentRoutes;
