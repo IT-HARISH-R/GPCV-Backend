@@ -124,11 +124,13 @@ export const studentController = {
                 address,
                 aadhaarNumber,
             };
+            const user = await Student.findOne({ email: email });
 
-            const user = Student.findOne({ email: email });
-
-            if (user) {
-                return res.status(409).json({ message: 'Email already in use' });
+            if (user.email != email) {
+                const user2 = await Student.findOne({ email: email });
+                if (user2) {
+                    return res.status(409).json({ message: 'Email already in use' });
+                }
 
             }
 
